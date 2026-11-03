@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: API de Restaurante - Gestión de Platos
+  description: API REST construida con Node.js, Express, MongoDB y Mongoose para la gestión completa del menú y dietética de un restaurante.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001/api
+    description: Servidor de desarrollo local
+
+paths:
+  /health:
+    get:
+      summary: Healthcheck del servicio
+      responses:
+        '200':
+          description: Servicio saludable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: restaurant-api
+
+  /platos:
+    get:
+      summary: Listar todos los platos con filtros dietéticos opcionales
+      parameters:
+        - name: apto_celiacos
+          in: query
+          schema:
+            type: boolean
+        - name: apto_veganos
+          in: query
+          schema:
+            type: boolean
+        - name: apto_diabeticos
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Lista de platos encontrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plato'
+
+    post:
+      summary: Crear un nuevo plato (Alta)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlatoInput'
+      responses:
+        '201':
+          description: Plato creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plato'
+        '400':
+          description: Error de validación de campos obligatorios
+        '409':
+          description: Conflicto - Nombre de plato duplicado
+
+  /platos/{id}:
+    get:
+      summary: Obtener un plato por su ObjectId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalle del plato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plato'
+        '400':
+          description: ID inválido
+        '404':
+          description: Plato no encontrado
+
+    put:
+      summary: Modificar datos de un plato existente (Modificación)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Plato actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plato'
+        '400':
+          description: Error de validación o ID inválido
+        '404':
+          description: Plato no encontrado
+
+    delete:
+      summary: Eliminar un plato de la carta (Baja)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plato eliminado exitosamente
+        '400':
+          description: ID inválido
+        '404':
+          description: Plato no encontrado
+
+components:
+  schemas:
+    PlatoInput:
+      type: object
+      required:
+        - nombre
+        - descripcion
+        - ingredientes
+        - precio
+        - apto_celiacos
+        - apto_veganos
+        - apto_diabeticos
+        - cantidad_calorias
+        - imagen_url
+      properties:
+        nombre:
+          type: string
+          example: Milanesa Napolitana con Fritas
+        descripcion:
+          type: string
+          example: Milanesa de ternera con salsa de tomate, jamón y queso gratinado.
+        ingredientes:
+          type: array
+          items:
+            type: string
+          example: ["carne vacuna", "pan rallado", "huevo", "tomate", "queso", "papas"]
+        precio:
+          type: number
+          example: 13500
+        apto_celiacos:
+          type: boolean
+          example: false
+        apto_veganos:
+          type: boolean
+          example: false
+        apto_diabeticos:
+          type: boolean
+          example: false
+        cantidad_calorias:
+          type: number
+          example: 850
+        imagen_url:
+          type: string
+          example: https://images.unsplash.com/photo-milanesa.jpg
+
+    Plato:
+      allOf:
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: 65f818f60c981214d02f83e1
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+        - $ref: '#/components/schemas/PlatoInput'

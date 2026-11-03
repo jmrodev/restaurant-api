@@ -1,0 +1,19 @@
+{
+  "name": "restaurant-api",
+  "version": "1.0.0",
+  "description": "API REST de Restaurante con Node.js, Express, MongoDB y Mongoose",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/scripts/seed.js",
+    "test": "hurl --test --jobs 1 tests/hurl/*.hurl --variables-file tests/hurl/env.local"
+  },
+  "keywords": ["mongodb", "mongoose", "rest-api", "express", "restaurant"],
+  "author": "Juan Marcelo Rodriguez",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}
