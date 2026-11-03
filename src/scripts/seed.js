@@ -111,7 +111,7 @@ const platosVariados = [
     apto_veganos: false,
     apto_diabeticos: false,
     cantidad_calorias: 620,
-    imagen_url: "https://images.unsplash.com/photo-1587740896339-968901f05477?w=800"
+    imagen_url: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800"
   }
 ];
 
